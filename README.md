@@ -37,7 +37,7 @@ This project implements a smart mirror feature that detects users' facial expres
 # Install required packages
 pip install fer
 pip install tensorflow>=1.7
-pip install opencv-contrib-python==3.3.0.9
+pip install opencv-contrib-python>=3.2
 pip install moviepy==1.0
 pip install numpy==1.24
 pip install pyttsx3

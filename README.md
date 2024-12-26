@@ -1,6 +1,4 @@
-# personalized-compliment-generator
-
-# Smart Mirror Feature: Emotion-Based Compliment Generator
+# smart mirror feature: personalized-compliment-generator
 
 ## Overview
 This project implements a smart mirror feature that detects users' facial expressions and provides personalized compliments based on their emotional state. The system uses computer vision and emotion recognition technologies to create an engaging and uplifting user experience.

@@ -9,7 +9,9 @@ A smart mirror feature that detects faces, analyzes expressions, and provides pe
 - Privacy-focused (all processing done locally)
 
 ## Installation & Running
-1. Install requirements:
+1. Setup Python 3.10 virtual environment
+
+2. Install requirements:
 ```bash
 pip install fer
 pip install tensorflow-cpu
@@ -19,7 +21,7 @@ pip install numpy==1.24
 pip install pyttsx3
 ```
 
-2. Run the application:
+3. Run the application:
 ```bash
 python main.py
 ```

@@ -1,0 +1,26 @@
+{
+    "camera": {
+        "width": 640,
+        "height": 480,
+        "fps": 30,
+        "device_id": 0
+    },
+    "display": {
+        "font": "cv2.FONT_HERSHEY_SIMPLEX",
+        "font_scale": 0.8,
+        "thickness": 2,
+        "text_color": [255, 255, 255],
+        "box_color": [0, 255, 0],
+        "overlay_color": [0, 0, 0],
+        "overlay_alpha": 0.7
+    },
+    "tts": {
+        "rate": 150,
+        "volume": 0.9,
+        "voice_id": "english"
+    },
+    "compliments": {
+        "interval_seconds": 4,
+        "min_confidence": 0.5
+    }
+}

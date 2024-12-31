@@ -1,0 +1,27 @@
+{
+    "happy": [
+        "Your smile lights up the room!",
+        "Your joy is absolutely contagious.",
+        "You radiate such positive energy!"
+    ],
+    "neutral": [
+        "I appreciate your balanced outlook.",
+        "You have such a composed demeanor!",
+        "You bring calm wherever you go."
+    ],
+    "sad": [
+        "You've got this, keep going!",
+        "You’re stronger than you think.",
+        "Tomorrow brings new opportunities!"
+    ],
+    "angry": [
+        "Your passion is powerful!",
+        "You have the strength to overcome this!",
+        "Take a deep breath, you handle pressure well!"
+    ],
+    "surprised": [
+        "Your expressive nature is delightful!",
+        "What a wonderfully animated face!",
+        "Your reactions are so genuine!"
+    ]
+}

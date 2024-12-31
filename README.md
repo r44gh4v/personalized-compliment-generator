@@ -8,20 +8,15 @@ A smart mirror feature that detects faces, analyzes expressions, and provides pe
 - Personalized compliments with text-to-speech
 - Privacy-focused (all processing done locally)
 
-## Requirements
-```
+## Installation & Running
+1. Install requirements:
+```bash
 pip install fer
 pip install tensorflow-cpu
 pip install opencv-contrib-python>=3.2
 pip install moviepy==1.0
 pip install numpy==1.24
 pip install pyttsx3
-```
-
-## Installation & Running
-1. Install requirements:
-```bash
-pip install opencv-python fer numpy pyttsx3 tensorflow
 ```
 
 2. Run the application:

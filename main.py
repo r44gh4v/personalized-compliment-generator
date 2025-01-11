@@ -42,39 +42,42 @@ class TTSEngine:
 
 class SmartMirror:
     def __init__(self):
-        # Load configurations
+        #Load configurations
         with open('config.json', 'r') as f:
             self.settings = json.load(f)
         with open('compliments.json', 'r') as f:
             self.compliments = json.load(f)
         
-        # Initialize components
+        #Initialize components
         self.detector = FER(mtcnn=True)
         self.cap = cv2.VideoCapture(self.settings['camera']['device_id'])
         self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, self.settings['camera']['width'])
         self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, self.settings['camera']['height'])
         self.tts = TTSEngine(self.settings)
         
-        # State tracking
+        #States
         self.current_emotion = "neutral"
+        self.last_spoken_emotion = None
         self.last_compliment = ""
         self.last_compliment_time = 0
         
-        # Create static overlay background
+        #Create static overlay background
         self.overlay_height = 100
         self.create_overlay_background()
     
     def create_overlay_background(self):
-        """Create a static background for the overlay"""
+        #Create static background for overlay
         width = self.settings['camera']['width']
         self.overlay = np.zeros((self.overlay_height, width, 3), dtype=np.uint8)
-        # Add semi-transparent black background
+        #Add semi-transparent black background
         cv2.rectangle(self.overlay, (0, 0), (width, self.overlay_height),
                      self.settings['display']['overlay_color'], -1)
     
     def get_emotion(self, frame):
+
         try:
             result = self.detector.detect_emotions(frame)
+
             if result and len(result) > 0:
                 emotions = result[0]['emotions']
                 dominant_emotion = max(emotions.items(), key=lambda x: x[1])
@@ -91,18 +94,22 @@ class SmartMirror:
         return None
     
     def should_give_compliment(self):
-        current_time = time.time()
-        if current_time - self.last_compliment_time >= self.settings['compliments']['interval_seconds']:
-            self.last_compliment_time = current_time
+        # current_time = time.time()
+        
+        # if (self.current_emotion != self.last_spoken_emotion and 
+        #     current_time - self.last_compliment_time >= self.settings['compliments']['interval_seconds']):
+
+        if self.last_spoken_emotion is None or self.current_emotion != self.last_spoken_emotion:
+            
+            # self.last_compliment_time = current_time
+            self.last_spoken_emotion = self.current_emotion
             return True
         return False
     
     def update_overlay(self, emotion):
-        """Update the overlay with current emotion and compliment"""
-        # Create a fresh copy of the background
         overlay = self.overlay.copy()
-        
-        # Add emotion text
+
+        #Add emotion text
         emotion_text = f"Current Emotion: {emotion.title()}"
         cv2.putText(overlay, emotion_text,
                    (20, 30),
@@ -111,7 +118,7 @@ class SmartMirror:
                    self.settings['display']['text_color'],
                    self.settings['display']['thickness'])
         
-        # Add compliment text
+        #Add compliment text
         if self.last_compliment:
             cv2.putText(overlay, self.last_compliment,
                        (20, 70),
@@ -123,7 +130,6 @@ class SmartMirror:
         return overlay
     
     def blend_overlay(self, frame, overlay):
-        """Blend the overlay with the main frame"""
         result = frame.copy()
         alpha = self.settings['display']['overlay_alpha']
         result[0:self.overlay_height, 0:frame.shape[1]] = cv2.addWeighted(
@@ -136,26 +142,23 @@ class SmartMirror:
         return result
     
     def process_frame(self, frame):
-        # Get emotion and update current emotion if detected
+
         emotion, face_box = self.get_emotion(frame)
-        if emotion:
+        if emotion and emotion != self.current_emotion:
             self.current_emotion = emotion
+
+            if self.should_give_compliment():
+                compliment = self.get_compliment(self.current_emotion)
+                if compliment:
+                    self.last_compliment = compliment
+                    self.tts.speak(compliment)
         
-        # Handle compliments based on interval
-        if self.should_give_compliment():
-            compliment = self.get_compliment(self.current_emotion)
-            if compliment:
-                self.last_compliment = compliment
-                self.tts.speak(compliment)
-        
-        # Draw face box if detected
         if face_box:
             x, y, w, h = face_box
             cv2.rectangle(frame, (x, y), (x+w, y+h), 
                          self.settings['display']['box_color'], 
                          self.settings['display']['thickness'])
         
-        # Update and blend overlay
         overlay = self.update_overlay(self.current_emotion)
         frame = self.blend_overlay(frame, overlay)
         
@@ -183,4 +186,3 @@ class SmartMirror:
 if __name__ == "__main__":
     mirror = SmartMirror()
     mirror.run()
-    

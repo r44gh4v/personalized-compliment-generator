@@ -13,6 +13,7 @@ class TTSEngine:
         self.settings = settings
         self.speech_queue = queue.Queue()
         self.engine = None
+        self.is_speaking = False
         self.init_engine()
         self.start_thread()
     
@@ -30,12 +31,18 @@ class TTSEngine:
             try:
                 text = self.speech_queue.get()
                 if text:
+                    self.is_speaking = True
                     self.engine.say(text)
                     self.engine.runAndWait()
+                    self.is_speaking = False
                 self.speech_queue.task_done()
             except Exception as e:
                 print(f"TTS Error: {e}")
+                self.is_speaking = False
     
+    def is_busy(self):
+        return self.is_speaking or not self.speech_queue.empty()
+
     def speak(self, text):
         if text:
             self.speech_queue.put(text)
@@ -147,7 +154,7 @@ class SmartMirror:
         if emotion and emotion != self.current_emotion:
             self.current_emotion = emotion
 
-            if self.should_give_compliment():
+            if self.should_give_compliment() and not self.tts.is_busy():
                 compliment = self.get_compliment(self.current_emotion)
                 if compliment:
                     self.last_compliment = compliment
